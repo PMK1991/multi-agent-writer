@@ -1,5 +1,11 @@
 import llm_client
 from crewai import Agent
+from dotenv import load_dotenv
+from langfuse.callback import CallbackHandler
+from crewai_tools import SerperDevTool
+load_dotenv()
+search_tool = SerperDevTool()
+langfuse_handler = CallbackHandler()
 
 class ContentTeam:
     def __init__(self):
@@ -21,7 +27,9 @@ class ContentTeam:
                       "the Content Writer to write an article on this topic.",
             llm=self.llm,
             allow_delegation=False,
-            verbose=True
+            verbose=True,
+            tools=[search_tool],
+            callbacks=[langfuse_handler]
         )
 
     def create_writer(self):
@@ -45,7 +53,8 @@ class ContentTeam:
                       "as opposed to objective statements.",
             llm=self.llm,
             allow_delegation=False,
-            verbose=True
+            verbose=True,
+            callbacks=[langfuse_handler]
         )
 
     def create_editor(self):
@@ -63,7 +72,8 @@ class ContentTeam:
                       "or opinions when possible.",
             llm=self.llm,
             allow_delegation=False,
-            verbose=True
+            verbose=True,
+            callbacks=[langfuse_handler]
         )
 
 # Usage
